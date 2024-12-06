@@ -31,7 +31,7 @@ public class Director {
     public void displayInfo(){
         System.out.println("Director: " + firstName + " " + lastName);
         System.out.println("Date Of Birth: " + dateOfBirth);
-        System.out.println("age: " + age);
+        System.out.println("Age: " + age);
         System.out.println("Gender: " + gender);
         System.out.println("Nationality: " + nationality);
         System.out.println("Social Media Links: " + socialMedialinks);
@@ -40,5 +40,5 @@ public class Director {
             System.out.println(" - " + movie);
         }
         System.out.println();
-}
+    }
 }
