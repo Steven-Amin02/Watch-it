@@ -12,36 +12,44 @@ public class Movie {
     private LocalDate movieDate;  // LocalDate.of(2010, 7, 16) --> will be used when creating object
     private float duration;
     private double imdbScore;
-    private ArrayList<String> genres = new ArrayList<>();
+    protected ArrayList<String> genres = new ArrayList<>();
     private ArrayList<String> languages = new ArrayList<>();
-    // List of Director from class Director
-    private ArrayList<Cast> castList = new ArrayList<>(); // List of cast from class cast
+    //The Director
+    private ArrayList<Cast> castList; // List of cast from class cast
     private float budget;
-    private float Revenue;
+    private float revenue;
     private String poster;
-    private float movieRate;
     private String country;
+    static int countMovie = 0;
 
     // Constructor with parameters
-    public Movie(String movieId, String title, LocalDate movieDate, float duration, float Revenue, float budget, String poster, String country, float movieRate) {
-        this.movieId = movieId;
-        this.title = title;
-        this.movieDate = movieDate;
-        this.duration = duration;
-        this.Revenue = Revenue;
-        this.budget = budget;
-        this.poster = poster;
-        this.country = country;
-        this.movieRate = movieRate;
-        modifyGenre();
+    public Movie(String title, LocalDate movieDate, float duration, float Revenue, float budget, String poster, String country, double imdbScore, String genre) {
+        countMovie++;
+        if (genre == null || genre.trim().isEmpty()) {
+            throw new IllegalArgumentException("Genre cannot be null or empty.");
+        }
+        setTitle(title);
+        setMovieDate(movieDate);
+        setDuration(duration);
+        setRevenue(revenue);
+        setBudget(budget);
+        setPoster(poster);
+        setCountry(country);
+        setImdbScore(imdbScore);
+        genres.add(genre);
+        this.castList = new ArrayList<>();
+        setMovieId();
     }
+
 
     // Default constructor
     public Movie(){}
+
     // Method to calculate profitability
     public float calcProfitability() {
-        return this.Revenue - this.budget;
+        return this.revenue - this.budget;
     }
+
     // Method to modify genres (add, delete)
     void modifyGenre() {
         String name;
@@ -103,8 +111,8 @@ public class Movie {
         return movieId;
     }
 
-    public void setMovieId(String movieId) {
-        this.movieId = movieId;
+    private void setMovieId() {
+        this.movieId = genres.get(0).charAt(0) + Integer.toString(countMovie);
     }
 
     public String getTitle() {
@@ -112,6 +120,9 @@ public class Movie {
     }
 
     public void setTitle(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be null or empty.");
+        }
         this.title = title;
     }
 
@@ -120,6 +131,12 @@ public class Movie {
     }
 
     public void setMovieDate(LocalDate movieDate) {
+        if (movieDate == null) {
+            throw new IllegalArgumentException("Movie date cannot be null.");
+        }
+        if (movieDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Movie date cannot be in the future.");
+        }
         this.movieDate = movieDate;
     }
 
@@ -128,15 +145,18 @@ public class Movie {
     }
 
     public void setDuration(float duration) {
+        if (duration <= 0) {
+            throw new IllegalArgumentException("Duration must be greater than 0.");
+        }
         this.duration = duration;
     }
 
     // Set imdbScore
     public void setImdbScore(double imdbScore){
-        if(imdbScore >= 0 && imdbScore <= 10)
-            this.imdbScore = imdbScore;
-        else
-            System.out.println("Invalid Score");
+        if (imdbScore < 0 || imdbScore > 10) {
+            throw new IllegalArgumentException("Movie rate must be between 0 and 10.");
+        }
+         this.imdbScore = imdbScore;
     }
 
     public double getImdbScore() {
@@ -148,15 +168,21 @@ public class Movie {
     }
 
     public void setBudget(float budget) {
+        if (budget <= 0) {
+            throw new IllegalArgumentException("Budget must be greater than 0.");
+        }
         this.budget = budget;
     }
 
     public float getRevenue() {
-        return Revenue;
+        return revenue;
     }
 
     public void setRevenue(float revenue) {
-        Revenue = revenue;
+        if (revenue < 0) {
+            throw new IllegalArgumentException("Revenue cannot be negative.");
+        }
+        this.revenue = revenue;
     }
 
     public String getPoster() {
@@ -164,15 +190,10 @@ public class Movie {
     }
 
     public void setPoster(String poster) {
+        if (poster == null || poster.trim().isEmpty()) {
+            throw new IllegalArgumentException("Poster cannot be null or empty.");
+        }
         this.poster = poster;
-    }
-
-    public float getMovieRate() {
-        return movieRate;
-    }
-
-    public void setMovieRate(float movieRate) {
-        this.movieRate = movieRate;
     }
 
     public String getCountry() {
@@ -180,9 +201,24 @@ public class Movie {
     }
 
     public void setCountry(String country) {
+        if (country == null || country.trim().isEmpty()) {
+            throw new IllegalArgumentException("Country cannot be null or empty.");
+        }
         this.country = country;
     }
 
+    // Print the last movies from 10 days ago
+    public static ArrayList<Movie> getMoviesReleasedLast10Days(ArrayList<Movie> movies) {
+        LocalDate currentDate = LocalDate.now();
+        ArrayList<Movie> recentMovies = new ArrayList<>();
+
+        for (Movie movie : movies) {
+            if (movie.getMovieDate().isAfter(currentDate.minusDays(10))) {
+                recentMovies.add(movie);
+            }
+        }
+        return recentMovies;
+    }
     // Method to display movie details
     @Override
     public String toString() {
@@ -193,9 +229,8 @@ public class Movie {
                 ", duration=" + duration +
                 ", genres=" + genres +
                 ", budget=" + budget +
-                ", Revenue=" + Revenue +
+                ", Revenue=" + revenue +
                 ", poster='" + poster + '\'' +
-                ", movieRate=" + movieRate +
                 ", country='" + country + '\'' +
                 '}';
     }
