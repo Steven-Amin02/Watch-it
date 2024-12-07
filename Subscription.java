@@ -1,5 +1,7 @@
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Scanner;
+import java.lang.StringTemplate;
 
 
 public class Subscription {
@@ -8,11 +10,16 @@ public class Subscription {
     private Plan Plans ;
     private double Price;
     private Date StartDate;
-
     private static int MoviesWatched;
     private Date ExpirationDate ;
     private boolean RenewalStatus;
+    private static int BasicCount;
+    private static int PremiumCount;
+    private static int StandardCount;
 
+
+
+    Scanner scanner = new Scanner(System.in);
     public Subscription(String userID, String planType, Date startDate) {
         this.UserID = userID;
         this.StartDate = startDate;
@@ -85,12 +92,15 @@ public class Subscription {
             switch (planType.toLowerCase()) {
                 case "basic":
                     this.Plans = new Basic();
+                    BasicCount++;
                     break;
                 case "standard":
                     this.Plans = new Standard();
+                    StandardCount++;
                     break;
                 case "premium":
                     this.Plans = new Premium();
+                    PremiumCount++;
                     break;
                 default:
                     System.out.println("Invalid plan type");
@@ -112,26 +122,20 @@ public class Subscription {
         return calendar.getTime();
     }
     public void checkSubscriptionStatus() {
-       try{
-           Date currentDate = new Date();
-           if (currentDate.after(this.ExpirationDate)) {
-               System.out.println("Your subscription has expired. Please renew to continue watching movies.");
-               // Logic to restrict access (e.g., set a flag or throw an exception)
-           } else {
-               System.out.println("Your subscription is active.");
+          if(this.Plans!=null) {
+               Date currentDate = new Date();
+               if (currentDate.after(this.ExpirationDate)) {
+                   System.out.println("Your subscription has expired. Please renew to continue watching movies.");
+                   // Logic to restrict access (e.g., set a flag or throw an exception)
+               } else {
+                   System.out.println("Your subscription is active.");
+               }
            }
-       }
-       catch(NullPointerException e) {
-           //Expiration date is not set.
-           System.out.println("You don't have a plan.");
-       }
-       catch(IllegalStateException e) {
+          else{
+               System.out.println("You don't have a plan.");
 
-           //Subscription has expired.
-           System.out.println("Your subscription has expired. Please renew to continue watching movies.");
+          }
 
-
-       }
     }
     public boolean canWatchMovie() {
        try{
@@ -181,11 +185,7 @@ public class Subscription {
     ////////////// Upgrade Plan
 
     public void upgradePlan(String newPlan) {
-        // Ensure new plan is higher-tier than the current one
-        if ((newPlan.equals("premium"))){
-            System.out.println("You are already on the highest plan. Upgrade not possible.");
-            return;
-        }
+
         try{
 
             switch (newPlan.toLowerCase()) {
@@ -194,19 +194,53 @@ public class Subscription {
                         System.out.println("You are already on the Basic plan.");
                         return;
                     } else {
+                        if (this.Plans instanceof Premium)
+                        {
+                            PremiumCount--;
+                        }
+                        else if (this.Plans instanceof Standard)
+                        {
+                                StandardCount--;
+                        }
                         this.Plans = new Basic();
+                        BasicCount++;
                     }
                     break;
                 case "standard":
-                    if (this.Plans instanceof Basic) {
-                        this.Plans = new Standard();
-                    } else {
+                    if (this.Plans instanceof Standard) {
                         System.out.println("You are already on the Standard plan.");
                         return;
+                    } else {
+                        if (this.Plans instanceof Premium)
+                        {
+                            PremiumCount--;
+                        }
+                        else if (this.Plans instanceof Basic)
+                        {
+                            BasicCount--;
+                        }
+                        this.Plans = new Standard();
+                        StandardCount++;
+
                     }
                     break;
                 case "premium":
-                    this.Plans = new Premium();
+                    if (this.Plans instanceof Premium) {
+                        System.out.println("You are already on the Premium plan.");
+                        return;
+                    }
+                    else {
+                        if (this.Plans instanceof Basic)
+                        {
+                            BasicCount--;
+                        }
+                        else if (this.Plans instanceof Standard)
+                        {
+                            StandardCount--;
+                        }
+                        this.Plans = new Premium();
+                        PremiumCount++;
+                    }
                     break;
                 default:
                     System.out.println("Invalid plan selected for upgrade.");
@@ -226,9 +260,21 @@ public class Subscription {
     }
 
     public void DeletePlan() {
-        this.Plans = null;
-        System.out.println("Subscription plan deleted.");
+       try {
+           switch (this.Plans.getPlanName()) {
+               case "basic" -> BasicCount--;
+               case "standard" -> StandardCount--;
+               case "premium" -> PremiumCount--;
+           }
 
+           this.Plans = null;
+           System.out.println("Subscription plan deleted.");
+
+       }
+       catch(NullPointerException e) {
+           //Plan is not set.
+           System.out.println("You already don't have a plan.");
+       }
     }
 
 
@@ -276,7 +322,12 @@ public class Subscription {
 
         try{
             System.out.println(STR."Current plan: \{this.Plans.getPlanName()}");
-            System.out.println("Compare with other plans to find the best fit.");
+            System.out.println(STR."Resolution: \{this.Plans.getResolution()}");
+            System.out.println(STR."Number of Movies: \{MoviesWatched}");
+            System.out.println(STR."Device Access: \{this.Plans.getDeviceAccess()}");
+            System.out.println(STR."Family Sharing: \{this.Plans.getFamilySharing()}");
+            System.out.println(STR."Additional Benefits: \{this.Plans.getAdditionalBenefit()}");
+            System.out.println("-----------------------------------------------------------");
         }
         catch (NullPointerException E){
             System.out.println("No plan set for this subscription.");
@@ -284,9 +335,108 @@ public class Subscription {
 
     }
 
+    public void DisplayNumOfSubscriptions()
+    {
+        System.out.println(STR."Basic plan subscriptions: \{BasicCount}");
+        System.out.println(STR."Standard plan subscriptions:  \{StandardCount}");
+        System.out.println(STR."Premium plan subscriptions:  \{ PremiumCount}");
+    }
+
+    public void DisplaySubscriptions() {
+        //Display Plans Details
+        System.out.println("Available Plans:");
+        System.out.println("-----------------------------------------------------------");
+        System.out.printf("%-10s %-10s %-10s %-10s %-10s %-10s\n", "Plan", "Movies", "Price", "Resolution", "Device Access", "Family Sharing");
+        System.out.println("-----------------------------------------------------------");
+        System.out.printf("%-10s %-10s %-10s %-10s %-10s %-10s\n", "Basic", "5", "$10", "SD", "0", "0");
+        System.out.printf("%-10s %-10s %-10s %-10s %-10s %-10s\n", "Standard", "10", "$20", "HD", "2", "2");
+        System.out.printf("%-10s %-10s %-10s %-10s %-10s %-10s\n", "Premium", "30", "$50", "4K", "Unlimited", "4");
+        System.out.println("-----------------------------------------------------------");
+    }
+    
+    
+    public void test()
+{
+
+    while (true) {
+
+        System.out.println("Subscriptions Menu");
+        System.out.println("1. Upgrade plan");
+        System.out.println("2. Delete plan");
+        System.out.println("3. Check subscription status");
+        System.out.println("4. Watch a movie");
+        System.out.println("5. Send plan comparison");
+        System.out.println("6. Check Number of subscriptions");
+        System.out.println("7. Exit");
+        System.out.print("Enter your choice: ");
+        int choice = scanner.nextInt();
+
+        switch (choice) {
+            case 1:
+                DisplaySubscriptions();
+                System.out.println("\n");
+                System.out.print("Enter new plan type (basic, standard, premium): ");
+                String newPlan = scanner.next();
+                upgradePlan(newPlan);
+                break;
+            case 2:
+                DeletePlan();
+                break;
+            case 3:
+                checkSubscriptionStatus();
+                break;
+            case 4:
+                watchMovie();
+                break;
+            case 5:
+                sendPlanComparison();
+                break;
+            case 6:
+                DisplayNumOfSubscriptions();
+                break;
+            case 7:
+                System.out.println("Exiting...");
+                scanner.close();
+                return;
+            default:
+                System.out.println("Invalid choice. Please try again.");
+                break;
+        }
+    }
+
+}
 
 
+public void TestNonSubscription() {
+    while (true) {
+        System.out.println("Non Subscription Menu");
+        System.out.println("1. Choose your subscription.");
+        System.out.println("2. Display available subscriptions");
+        System.out.println("3. Exit");
+        System.out.print("Enter your choice: ");
+        int choice = scanner.nextInt();
 
+        switch (choice) {
+            case 1:
+                System.out.print("Enter new plan type (basic, standard, premium): ");
+                String newPlan = scanner.next();
+                setPlan(newPlan);
+                break;
+            case 2:
+                DisplaySubscriptions();
+                break;
+            case 3:
+                System.out.println("Exiting...");
+                scanner.close();
+                return;
+            default:
+                System.out.println("Invalid choice. Please try again.");
+                break;
+
+        }
+
+    }
+}
 
     //end
     }
