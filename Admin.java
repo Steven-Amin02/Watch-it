@@ -31,7 +31,7 @@ public class Admin extends Person {
                 addMovie(movie);
                 break;
             case 2:
-                updateMovieDetails(movie);
+              //  updateMovieDetails(movie);
                 break;
             case 3:
                 System.out.println("Enter Movie ID that you want to delete");
@@ -70,8 +70,7 @@ else{
     System.out.println("Movie not found.");
 }
 }
-    public void updateMovieDetails(String movieId) {
-        Scanner scanner = new Scanner(System.in);
+public void updateMovieDetails(String movieId) {
         for (Movie movie : movielist) {
             if (movie.getMovieId().equals(movieId)) {
                 boolean updating = true;
@@ -90,18 +89,18 @@ else{
                     System.out.println("[11] Country");
                     System.out.println("[0] Exit");
 
-                    int choice = scanner.nextInt();
-                    scanner.nextLine();  // consume newline
+                    int choice = in.nextInt();
+                    in.nextLine();  // consume newline
 
                     switch (choice) {
                         case 1:
                             System.out.print("Enter new title: ");
-                            String title = scanner.nextLine();
+                            String title = in.nextLine();
                             movie.setTitle(title);
                             break;
                         case 2:
                             System.out.print("Enter new release date (yyyy-MM-dd): ");
-                            String dateStr = scanner.nextLine();
+                            String dateStr = in.nextLine();
                             try {
                                 LocalDate date = LocalDate.parse(dateStr);
                                 movie.setMovieDate(date);
@@ -111,12 +110,12 @@ else{
                             break;
                         case 3:
                             System.out.print("Enter new duration in minutes: ");
-                            float duration = scanner.nextFloat();
+                            float duration = in.nextFloat();
                             movie.setDuration(duration);
                             break;
                         case 4:
                             System.out.print("Enter new IMDB score: ");
-                            double score = scanner.nextDouble();
+                            double score = in.nextDouble();
                             movie.setImdbScore(score);
                             break;
                         case 5:
@@ -124,32 +123,32 @@ else{
                             break;
                         case 6:
                             System.out.print("Enter new language: ");
-                            String language = scanner.nextLine();
+                            String language = in.nextLine();
                             movie.addLanguage(language);
                             break;
                         case 7:
                             System.out.print("Enter new budget: ");
-                            float budget = scanner.nextFloat();
+                            float budget = in.nextFloat();
                             movie.setBudget(budget);
                             break;
                         case 8:
                             System.out.print("Enter new revenue: ");
-                            float revenue = scanner.nextFloat();
+                            float revenue = in.nextFloat();
                             movie.setRevenue(revenue);
                             break;
                         case 9:
                             System.out.print("Enter new poster URL: ");
-                            String poster = scanner.nextLine();
+                            String poster = in.nextLine();
                             movie.setPoster(poster);
                             break;
                         case 10:
                             System.out.print("Enter new movie rate: ");
-                            float rate = scanner.nextFloat();
+                            float rate = in.nextFloat();
                             movie.setMovieRate(rate);
                             break;
                         case 11:
                             System.out.print("Enter new country: ");
-                            String country = scanner.nextLine();
+                            String country = in.nextLine();
                             movie.setCountry(country);
                             break;
                         case 0:
