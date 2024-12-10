@@ -5,7 +5,7 @@ public class Director {
     final String firstName;
     final String lastName;
     final String nationality;
-    final int age;
+    private int age;
     final String dateOfBirth;
     final String gender;
     final String socialMedialinks;
