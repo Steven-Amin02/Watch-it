@@ -1,7 +1,7 @@
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
-import java.lang.StringTemplate;
+
 
 
 
@@ -145,7 +145,7 @@ public class Subscription {
                 return false;
             }
             if (MoviesWatched >= this.Plans.MaxMovies) {
-                System.out.println(STR."Cannot watch movies: You have reached your monthly limit of \{this.Plans.MaxMovies} movies.");
+                System.out.println("Cannot watch movies: You have reached your monthly limit of" +this.Plans.MaxMovies+" movies.");
                 return false;
             }
             return true;
@@ -165,7 +165,7 @@ public class Subscription {
         try {
             if (canWatchMovie()) {
                 MoviesWatched++;
-                System.out.println(STR."You watched a movie! Total movies watched this month: \{MoviesWatched}");
+                System.out.println("You watched a movie! Total movies watched this month:" +MoviesWatched);
             } else {
                 System.out.println("Unable to watch movie. Check your subscription status or movie limit.");
             }
@@ -238,7 +238,7 @@ public class Subscription {
             this.Price = this.Plans.Price;
             MoviesWatched = 0; // Reset movie count for new plan
             this.ExpirationDate = calculateExpirationDate(new Date()); // Recalculate expiration date from today
-            System.out.println(STR."Plan upgraded to: \{newPlan}. New monthly price: $\{this.Price}");
+            System.out.println("Plan upgraded to: "+newPlan +"New monthly price: "+this.Price);
         } catch (NullPointerException e) {
             //Plan is not set or maximum movie limit.
             System.out.println("You don't have a plan.");
@@ -300,7 +300,7 @@ public class Subscription {
             System.out.println("You don't have a subscription to renew.");
         } else {
             this.ExpirationDate = calculateExpirationDate(new Date());
-            System.out.println(STR."Subscription renewed. Next expiration date: \{this.ExpirationDate}");
+            System.out.println("Subscription renewed. Next expiration date: "+this.ExpirationDate);
         }
     }
 
@@ -308,12 +308,12 @@ public class Subscription {
 
 
         try {
-            System.out.println(STR."Current plan: \{this.Plans.getPlanName()}");
-            System.out.println(STR."Resolution: \{this.Plans.getResolution()}");
-            System.out.println(STR."Number of Movies: \{MoviesWatched}");
-            System.out.println(STR."Device Access: \{this.Plans.getDeviceAccess()}");
-            System.out.println(STR."Family Sharing: \{this.Plans.getFamilySharing()}");
-            System.out.println(STR."Additional Benefits: \{this.Plans.getAdditionalBenefit()}");
+            System.out.println("Current plan: "+this.Plans.getPlanName());
+            System.out.println("Resolution: "+this.Plans.getResolution());
+            System.out.println("Number of Movies: "+MoviesWatched);
+            System.out.println("Device Access: "+this.Plans.getDeviceAccess());
+            System.out.println("Family Sharing:"+ this.Plans.getFamilySharing());
+            System.out.println("Additional Benefits:"+ this.Plans.getAdditionalBenefit());
             System.out.println("-----------------------------------------------------------");
         } catch (NullPointerException E) {
             System.out.println("No plan set for this subscription.");
@@ -322,9 +322,9 @@ public class Subscription {
     }
 
     public void DisplayNumOfSubscriptions() {
-        System.out.println(STR."Basic plan subscriptions: \{BasicCount}");
-        System.out.println(STR."Standard plan subscriptions:  \{StandardCount}");
-        System.out.println(STR."Premium plan subscriptions:  \{PremiumCount}");
+        System.out.println("Basic plan subscriptions: "+BasicCount);
+        System.out.println("Standard plan subscriptions:  "+StandardCount);
+        System.out.println("Premium plan subscriptions:  "+PremiumCount);
     }
 
     public void DisplaySubscriptions() {
