@@ -10,6 +10,7 @@ public class Director {
     final String gender;
     final String socialMedialinks;
     private List<String> movies;
+    private String name;                                //New Added
 
     public Director(String firstName, String lastName, String nationality, int age, String dateOfBirth, String gender, String socialMedialinks){
         this.firstName = firstName;
@@ -20,6 +21,7 @@ public class Director {
         this.age = age;
         this.socialMedialinks = socialMedialinks;
         this.movies = new ArrayList<>();
+        name = firstName.concat(lastName);                       //New Added
     }
 
     // movie setter
