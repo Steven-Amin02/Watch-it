@@ -6,12 +6,9 @@ import java.util.Comparator;
 import java.util.Scanner;
 
 public class Recommendation extends Movie{
+    
+    Scanner input = new Scanner(System.in);
 
-    
-   Scanner input = new Scanner(System.in);
-
-    
-    
     public void sortRatingAsc(ArrayList<Movie> allMovies)
     {
         Collections.sort(allMovies , (m1,m2) -> Float.compare(m1.getRate(), m2.getRate()));
@@ -32,7 +29,7 @@ public class Recommendation extends Movie{
         }
     }
     
-      public void sortLikesAsc(ArrayList<Movie> allMovies)
+    public void sortLikesAsc(ArrayList<Movie> allMovies)
     {
         Collections.sort(allMovies , (m1,m2) -> Integer.compare(m1.getNoOfikes(), m2.getNoOfikes()));
         for(int i=0 ; i<allMovies.size() ; i++)
@@ -42,8 +39,8 @@ public class Recommendation extends Movie{
         }
     }
   
-      public void sortRatingDesc(ArrayList<Movie> allMovies)
-      {
+    public void sortRatingDesc(ArrayList<Movie> allMovies)
+    {
         //Collections.sort(allMovies , Collections.reverseOrder(Comparator.comparingDouble(Movie::getRate)));
         Collections.sort(allMovies , (m1,m2) -> Float.compare(m1.getRate(), m2.getRate()));
         for(int i=allMovies.size() ; i<=0 ; i--)
@@ -51,10 +48,10 @@ public class Recommendation extends Movie{
             System.out.println("(" + i+1 + ") Movie name: " + allMovies.get(i).getTitle() + 
                     "Movie rate: " + allMovies.get(i).getRate());            
         }
-      }
+    }
     
-      public void sortViewsDesc(ArrayList<Movie> allMovies)
-      {
+    public void sortViewsDesc(ArrayList<Movie> allMovies)
+    {
         //Collections.sort(allMovies , Collections.reverseOrder(Comparator.comparingInt(Movie::getNoOfviews)));
         Collections.sort(allMovies , (m1,m2) -> Integer.compare(m1.getNoOfviews(), m2.getNoOfviews()));
         for(int i=allMovies.size() ; i<=0 ; i--)
@@ -62,10 +59,11 @@ public class Recommendation extends Movie{
             System.out.println("(" + i+1 + ") Movie name: " + allMovies.get(i).getTitle() + 
                     "Movie rate: " + allMovies.get(i).getNoOfviews());            
         }
-      }
+    }
     
-      public void sortLikesDesc(ArrayList<Movie> allMovies)
-      {
+      
+    public void sortLikesDesc(ArrayList<Movie> allMovies)
+    {
         //Collections.sort(allMovies , Collections.reverseOrder(Comparator.comparingInt(Movie::getNoOfikes)));
         Collections.sort(allMovies , (m1,m2) -> Integer.compare(m1.getNoOfikes(), m2.getNoOfikes()));
         for(int i=allMovies.size() ; i<=0 ; i--)
@@ -73,8 +71,9 @@ public class Recommendation extends Movie{
             System.out.println("(" + i+1 + ") Movie name: " + allMovies.get(i).getTitle() + 
                     "Movie rate: " + allMovies.get(i).getNoOfikes());            
         }
-      }
-    
+    }
+
+      
     public void Sort(ArrayList<Movie> allMovies)
     {
         int choice1 , choice2;
@@ -133,22 +132,22 @@ public class Recommendation extends Movie{
         }
     }
      
+    
 //////////////SEARCH////////////////////////////SEARCH//////////////////////////////////SEARCH/////////////////////    
  
     
     public static final void checkSearchResult(int answer ,ArrayList<Movie> searchedResult)
-        {
-            if(answer == 0)
-                System.out.println("No matches found");
-            else{
-                for(int i=0 ; i<searchedResult.size() ; i++)
-                    System.out.println(searchedResult.get(i).getTitle());
+    {
+        if(answer == 0)
+            System.out.println("No matches found");
+        else{
+            for(int i=0 ; i<searchedResult.size() ; i++)
+                System.out.println(searchedResult.get(i).getTitle());
             }
-        }
+    }
     
     
-    
-    public void searchMovieName(ArrayList<Movie> allMovies)     //search movie by title
+    public void searchMovieByName(ArrayList<Movie> allMovies)     //search movie by title
     {
         String searchMovie;
         System.out.println("Search : ");
@@ -166,43 +165,117 @@ public class Recommendation extends Movie{
             Recommendation.checkSearchResult(searchedMovies.size(), searchedMovies);
         }   
     }
+
     
-    //search by director
-    //search by genres
+    public void searchMovieByDirector(ArrayList<Movie> allMovies)         //search by director
+    {
+        String searchDirector;
+        System.out.println("Search : ");
+        searchDirector = input.next();
+        
+        ArrayList<Movie> searchedMovies = new ArrayList<>();
+        
+        for(int i=0 ; i<allMovies.size() ; i++)
+        {
+            if( (allMovies.get(i).getDirector().getName().equalsIgnoreCase(searchDirector)) || 
+                    (allMovies.get(i).getDirector().getName().contains(searchDirector.toLowerCase())))
+            {
+                searchedMovies.add(allMovies.get(i));
+            }
+            Recommendation.checkSearchResult(searchedMovies.size(), searchedMovies);
+        }   
+    }  
+
     
+    public void searchMovieByGenre(ArrayList<Movie> allMovies)       //search by genres
+    {
+        String searchGenre;
+        System.out.println("Search : ");
+        searchGenre = input.next();
+        
+        ArrayList<Movie> searchedMovies = new ArrayList<>();
+        
+        for(int i=0 ; i<allMovies.size() ; i++)
+        {
+            if( (allMovies.get(i).getGenre().equalsIgnoreCase(searchGenre)) || 
+                    (allMovies.get(i).getGenre().contains(searchGenre.toLowerCase())))
+            {
+                searchedMovies.add(allMovies.get(i));
+            }
+            Recommendation.checkSearchResult(searchedMovies.size(), searchedMovies);
+        }   
+    }    
+
     
+    public void Search(ArrayList<Movie> allMovies)
+    {
+        int choice1;
+        
+        System.out.println("Search movies");
+        System.out.println("(1) By movie name");
+        System.out.println("(2) By movie genre");
+        System.out.println("(3) By movie director");
+        System.out.println("Enter your choice");
+        
+        choice1 = input.nextInt();
+        
+        switch (choice1){
+            case 1:
+                searchMovieByName(allMovies);
+                        break;
+            case 2:
+                searchMovieByGenre(allMovies);
+                break;
+            case 3:
+                searchMovieByDirector(allMovies);
+                break;       
+        }
+    }
     
+     /*public void RecommendMoviesByWathchedGenre(ArrayList<Movie> allMovies){
+         
+     }*/
+    
+}
+
    /*
-    to be added in Movie class
-    
+    ///////////TO BE ADDED TO MOVIE CLASS//////////////////////
     private float rate;
     private int noOfviews;
     private int noOfikes;
-
+    private Director Director = new Director();    
+    private String genre;                                          //DELETE ARRAYLIST OF GENRE    
     public int getNoOfviews() {
         return noOfviews;
     }
-
     public void setNoOfviews(int noOfviews) {
         this.noOfviews = noOfviews;
     }
-
     public int getNoOfikes() {
         return noOfikes;
     }
-
     public void setNoOfikes(int noOfikes) {
         this.noOfikes = noOfikes;
     }
-
     public float getRate() {
         return rate;
     }
-
     public void setRate(float rate) {
         this.rate = rate;
-    }*/
+    public String getGenre() {
+        return genre;
+    }
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+    public Director getDirector() {
+        return Director;
+    }
+    public void setD(Director D) {
+        this.Director = D;
+    }
+////////TO BE ADDED TO DIRECTOR CLASS////////////////////////
+    private String name;
+    name = firstName.concat(lastName);        IN THE CONSTRUCTOR
 
-    
-    
-}
+    }*/
