@@ -5,14 +5,14 @@ public class Director {
     final String firstName;
     final String lastName;
     final String nationality;
-    private int age;
+    final int age;
     final String dateOfBirth;
     final String gender;
     final String socialMedialinks;
     private List<String> movies;
-    private String name;                                //New Added
-
+    private String name;
     public Director(String firstName, String lastName, String nationality, int age, String dateOfBirth, String gender, String socialMedialinks){
+        name = firstName.concat(lastName);
         this.firstName = firstName;
         this.lastName = lastName;
         this.nationality = nationality;
@@ -21,12 +21,55 @@ public class Director {
         this.age = age;
         this.socialMedialinks = socialMedialinks;
         this.movies = new ArrayList<>();
-        name = firstName.concat(lastName);                       //New Added
     }
 
     // movie setter
     public void addMovie(String movie){
         movies.add(movie);
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public String getSocialMedialinks() {
+        return socialMedialinks;
+    }
+
+    public List<String> getMovies() {
+        return movies;
+    }
+
+    public void setMovies(List<String> movies) {
+        this.movies = movies;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     //display directors info
