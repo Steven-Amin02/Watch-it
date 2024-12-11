@@ -1,11 +1,12 @@
 package Model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Movie {
+public class Movie implements Serializable {
     private static final Scanner input = new Scanner(System.in);
     private String movieId;
     private String title;
@@ -207,7 +208,7 @@ public class Movie {
         this.country = country;
     }
 
-    // Print the last movies from 10 days ago
+
     public static ArrayList<Movie> getMoviesReleasedLast10Days(ArrayList<Movie> movies) {
         LocalDate currentDate = LocalDate.now();
         ArrayList<Movie> recentMovies = new ArrayList<>();
