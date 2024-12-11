@@ -1,19 +1,20 @@
-package Model;
-
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Movie implements Serializable {
+public class Movie {
     private static final Scanner input = new Scanner(System.in);
     private String movieId;
     private String title;
     private LocalDate movieDate;  // LocalDate.of(2010, 7, 16) --> will be used when creating object
     private float duration;
     private double imdbScore;
-    protected ArrayList<String> genres = new ArrayList<>();
+    private float rate;
+    private int noOfviews;
+    private int noOfikes;
+    private Director Director ;
+    private String genre;
     private ArrayList<String> languages = new ArrayList<>();
     //The Director
     private ArrayList<Cast> castList; // List of cast from class cast
@@ -37,7 +38,7 @@ public class Movie implements Serializable {
         setPoster(poster);
         setCountry(country);
         setImdbScore(imdbScore);
-        genres.add(genre);
+        this.genre = genre;
         this.castList = new ArrayList<>();
         setMovieId();
     }
@@ -52,42 +53,42 @@ public class Movie implements Serializable {
     }
 
     // Method to modify genres (add, delete)
-    void modifyGenre() {
-        String name;
-        while (true) {
-            System.out.println("1. Add Genre");
-            System.out.println("2. Delete Genre");
-            System.out.println("3. Exit");
-
-            int choice = 0;
-            try {
-                choice = input.nextInt();
-                input.nextLine();
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input! Please enter a valid number.");
-                input.nextLine();
-                continue;
-            }
-
-            switch (choice) {
-                case 1:
-                    System.out.println("Enter genre name:");
-                    name = input.nextLine();
-                    genres.add(name);  // Add new genre
-                    break;
-                case 2:
-                    System.out.println("Enter genre name to delete:");
-                    String searchName = input.next();
-                    genres.removeIf(genreItem -> genreItem.equals(searchName));  // Delete genre
-                    break;
-                case 3:
-                    System.out.println("Exiting...");
-                    return;  // Exit the method
-                default:
-                    System.out.println("Invalid choice. Try again.");
-            }
-        }
-    }
+//    void modifyGenre() {
+//        String name;
+//        while (true) {
+//            System.out.println("1. Add Genre");
+//            System.out.println("2. Delete Genre");
+//            System.out.println("3. Exit");
+//
+//            int choice = 0;
+//            try {
+//                choice = input.nextInt();
+//                input.nextLine();
+//            } catch (InputMismatchException e) {
+//                System.out.println("Invalid input! Please enter a valid number.");
+//                input.nextLine();
+//                continue;
+//            }
+//
+//            switch (choice) {
+//                case 1:
+//                    System.out.println("Enter genre name:");
+//                    name = input.nextLine();
+//                    genres.add(name);  // Add new genre
+//                    break;
+//                case 2:
+//                    System.out.println("Enter genre name to delete:");
+//                    String searchName = input.next();
+//                    genres.removeIf(genreItem -> genreItem.equals(searchName));  // Delete genre
+//                    break;
+//                case 3:
+//                    System.out.println("Exiting...");
+//                    return;  // Exit the method
+//                default:
+//                    System.out.println("Invalid choice. Try again.");
+//            }
+//        }
+//    }
 
     void addLanguage(String name){
         languages.add(name);
@@ -113,7 +114,7 @@ public class Movie implements Serializable {
     }
 
     private void setMovieId() {
-        this.movieId = genres.get(0).charAt(0) + Integer.toString(countMovie);
+        this.movieId = genre.charAt(0) + Integer.toString(countMovie);
     }
 
     public String getTitle() {
@@ -157,7 +158,7 @@ public class Movie implements Serializable {
         if (imdbScore < 0 || imdbScore > 10) {
             throw new IllegalArgumentException("Movie rate must be between 0 and 10.");
         }
-         this.imdbScore = imdbScore;
+        this.imdbScore = imdbScore;
     }
 
     public double getImdbScore() {
@@ -208,7 +209,7 @@ public class Movie implements Serializable {
         this.country = country;
     }
 
-
+    // Print the last movies from 10 days ago
     public static ArrayList<Movie> getMoviesReleasedLast10Days(ArrayList<Movie> movies) {
         LocalDate currentDate = LocalDate.now();
         ArrayList<Movie> recentMovies = new ArrayList<>();
@@ -220,6 +221,36 @@ public class Movie implements Serializable {
         }
         return recentMovies;
     }
+    public int getNoOfviews() {
+        return noOfviews;
+    }
+    public void setNoOfviews(int noOfviews) {
+        this.noOfviews = noOfviews;
+    }
+    public int getNoOfikes() {
+        return noOfikes;
+    }
+    public void setNoOfikes(int noOfikes) {
+        this.noOfikes = noOfikes;
+    }
+    public float getRate() {
+        return rate;
+    }
+    public void setRate(float rate) {
+        this.rate = rate;
+    }
+        public String getGenre() {
+            return genre;
+        }
+        public void setGenre(String genre) {
+            this.genre = genre;
+        }
+        public Director getDirector() {
+            return Director;
+        }
+        public void setD(Director D) {
+            this.Director = D;
+        }
     // Method to display movie details
     @Override
     public String toString() {
@@ -228,7 +259,7 @@ public class Movie implements Serializable {
                 ", title='" + title + '\'' +
                 ", movieDate=" + movieDate +
                 ", duration=" + duration +
-                ", genres=" + genres +
+                ", genre=" + genre +
                 ", budget=" + budget +
                 ", Revenue=" + revenue +
                 ", poster='" + poster + '\'' +
