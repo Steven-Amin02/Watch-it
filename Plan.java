@@ -1,3 +1,4 @@
+package Model;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -92,6 +93,7 @@ public class Plan {
             planList.add(new Plan("basic", 5, 10.0, "SD", 5, 0, "Limited access to content"));
             planList.add(new Plan("standard", 10, 20.0, "HD", 10, 2, "Access to a larger library, Get 10% off every third movie"));
             planList.add(new Plan("premium", 30, 50.0, "4k", 50, 4, "Full library access, early content access, priority support"));
+            planList.add(new Plan("Non-plan", 0, 0.0, "None", 0, 0, "No access to content"));
         }
     }
 
