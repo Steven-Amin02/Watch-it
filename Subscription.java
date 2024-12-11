@@ -432,7 +432,7 @@ public class Subscription {
     }
 
     public void Testmenu() {
-        if (Plans== null) {
+       if (Plans == null || Plans.getPlanName().equalsIgnoreCase("Non-plan")) {
             TestNonSubscription();
         }
         else{
