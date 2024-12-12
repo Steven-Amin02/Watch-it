@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class Subscription {
 
-    private String UserID;
+    
     private Plan Plans;
     private double Price;
     private Date StartDate;
@@ -23,8 +23,7 @@ public class Subscription {
 
     Scanner scanner = new Scanner(System.in);
 
-    public Subscription(String userID, String planType, Date startDate) {
-        this.UserID = userID;
+    public Subscription( String planType, Date startDate) {
         this.StartDate = startDate;
         if (planType == null || planType.trim().isEmpty()) {
             this.Plans = Plan.getPlanByName("Non-plan");
@@ -38,13 +37,7 @@ public class Subscription {
     public Subscription() {
     }
 
-    public String getUserID() {
-        return UserID;
-    }
-
-    public void setUserID(String userID) {
-        UserID = userID;
-    }
+    
 
     public Plan getPlans() {
         return Plans;
