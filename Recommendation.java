@@ -1,14 +1,18 @@
-package watchit.project;
+package Model;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Scanner;
+//import java.util.Exception;
+import java.util.InputMismatchException;
 
 public class Recommendation extends Movie{
     
-    Scanner input = new Scanner(System.in);
+Scanner input = new Scanner(System.in);
 
+//////////////SORT/////////////////SORT/////////SORT///////////////SORT/////////////    
+    
     public void sortRatingAsc(ArrayList<Movie> allMovies)
     {
         Collections.sort(allMovies , (m1,m2) -> Float.compare(m1.getRate(), m2.getRate()));
@@ -78,12 +82,13 @@ public class Recommendation extends Movie{
     {
         int choice1 , choice2;
         
-        System.out.println("Sort movies");
+        
+         System.out.println("Sort movies");
         System.out.println("(1) Sort by Rating");
         System.out.println("(2) Sort by Views");
         System.out.println("(3) Sort by Likes");
         System.out.println("Enter your choice");
-        
+        try{
         choice1 = input.nextInt();
         
         switch (choice1){
@@ -92,6 +97,7 @@ public class Recommendation extends Movie{
                 System.out.println("(2) Low to high");
                 System.out.println("Enter your choice");
                 choice2 = input.nextInt();
+               try{
                 switch(choice2){
                     case 1:
                         sortRatingDesc(allMovies);
@@ -100,12 +106,17 @@ public class Recommendation extends Movie{
                         sortRatingAsc(allMovies);
                         break;
                 }
+                }catch(InputMismatchException e){
+                       System.out.println("Please enter invalid number");
+                        }               
+                
                 break;
                 case 2:
                 System.out.println("(1) High to low");
                 System.out.println("(2) Low to high");
                 System.out.println("Enter your choice");
                 choice2 = input.nextInt();
+                try{
                 switch(choice2){
                     case 1:
                         sortViewsDesc(allMovies);
@@ -114,11 +125,16 @@ public class Recommendation extends Movie{
                         sortViewsAsc(allMovies);
                         break;
                 }
+                }catch(InputMismatchException e){
+                    System.out.println("Please enter invalid number");
+                    
+                }
                 break;
                 case 3:
                 System.out.println("(1) High to low");
                 System.out.println("(2) Low to high");
                 System.out.println("Enter your choice");
+                try{
                 choice2 = input.nextInt();
                 switch(choice2){
                     case 1:
@@ -127,18 +143,23 @@ public class Recommendation extends Movie{
                     case 2:
                         sortLikesAsc(allMovies);
                         break;
-                }
+                }        
+                }catch(InputMismatchException e){
+            System.out.println("Please enter valid number");
+            }
                 break;       
+        }       
+        }catch(InputMismatchException e){
+            System.out.println("Please enter valid number");
         }
-    }
-     
-    
+}
+        
 //////////////SEARCH////////////////////////////SEARCH//////////////////////////////////SEARCH/////////////////////    
  
     
-    public static final void checkSearchResult(int answer ,ArrayList<Movie> searchedResult)
+    public static final void checkSearchResult(ArrayList<Movie> searchedResult)
     {
-        if(answer == 0)
+        if(searchedResult.isEmpty())
             System.out.println("No matches found");
         else{
             for(int i=0 ; i<searchedResult.size() ; i++)
@@ -151,19 +172,28 @@ public class Recommendation extends Movie{
     {
         String searchMovie;
         System.out.println("Search : ");
+        try{
         searchMovie = input.next();
+        
+        if(searchMovie.isBlank()){
+            throw new IllegalArgumentException(); 
+        }
         
         ArrayList<Movie> searchedMovies = new ArrayList<>();
         
         for(int i=0 ; i<allMovies.size() ; i++)
         {
-            if( (allMovies.get(i).getTitle().equalsIgnoreCase(searchMovie)) || 
-                    (allMovies.get(i).getTitle().toLowerCase().contains(searchMovie.toLowerCase())))
+            if(allMovies.get(i).getTitle().toLowerCase().contains(searchMovie.trim().toLowerCase()))
             {
                 searchedMovies.add(allMovies.get(i));
             }
-            Recommendation.checkSearchResult(searchedMovies.size(), searchedMovies);
-        }   
+            Recommendation.checkSearchResult(searchedMovies);
+        }
+        }catch (IllegalArgumentException e){
+            System.out.println("Empty search");
+        }catch(Exception e){
+            System.out.println("Unexpected error " + e.getMessage());
+        }
     }
 
     
@@ -171,19 +201,31 @@ public class Recommendation extends Movie{
     {
         String searchDirector;
         System.out.println("Search : ");
+        
+        try{
         searchDirector = input.next();
+        
+        if(searchDirector.isBlank())
+        {
+            throw new IllegalArgumentException();
+        }
         
         ArrayList<Movie> searchedMovies = new ArrayList<>();
         
         for(int i=0 ; i<allMovies.size() ; i++)
         {
-            if( (allMovies.get(i).getDirector().getName().equalsIgnoreCase(searchDirector)) || 
-                    (allMovies.get(i).getDirector().getName().contains(searchDirector.toLowerCase())))
+            if(allMovies.get(i).getDirector().getName().toLowerCase().contains(searchDirector.trim().toLowerCase()))
             {
                 searchedMovies.add(allMovies.get(i));
             }
-            Recommendation.checkSearchResult(searchedMovies.size(), searchedMovies);
-        }   
+            Recommendation.checkSearchResult(searchedMovies);
+        }
+        }catch(IllegalArgumentException e){
+            System.out.println("Empty search");
+        }
+        catch(Exception e){
+            e.getMessage();
+        }
     }  
 
     
@@ -191,21 +233,90 @@ public class Recommendation extends Movie{
     {
         String searchGenre;
         System.out.println("Search : ");
-        searchGenre = input.next();
+        
+        try{
+        
+            searchGenre = input.next();
+        
+        if(searchGenre.isBlank()){
+            throw new IllegalArgumentException();
+        }
+            
+        ArrayList<Movie> searchedMovies = new ArrayList<>();
+        
+        for(int i=0 ; i<allMovies.size() ; i++)
+        {
+            if(allMovies.get(i).getGenre().toLowerCase().contains(searchGenre.trim().toLowerCase()))
+            {
+                searchedMovies.add(allMovies.get(i));
+            }
+            Recommendation.checkSearchResult(searchedMovies);
+        }
+        }catch(IllegalArgumentException e){
+             System.out.println("Empty search");
+        }
+        catch(Exception e){
+            e.getMessage();
+        }             
+    }   
+    
+    
+    public void searchMovieByActor(ArrayList<Movie> allMovies)
+    {
+        String searchActor;
+        System.out.println("Search : ");
+        try{
+        searchActor = input.next();
+        
+        if(searchActor.isBlank()){
+            throw new IllegalArgumentException();
+        }
         
         ArrayList<Movie> searchedMovies = new ArrayList<>();
         
         for(int i=0 ; i<allMovies.size() ; i++)
         {
-            if( (allMovies.get(i).getGenre().equalsIgnoreCase(searchGenre)) || 
-                    (allMovies.get(i).getGenre().contains(searchGenre.toLowerCase())))
+            for(int j=0 ; j<allMovies.get(i).getCastList().size() ; j++)
             {
-                searchedMovies.add(allMovies.get(i));
-            }
-            Recommendation.checkSearchResult(searchedMovies.size(), searchedMovies);
-        }   
-    }    
-
+                if(allMovies.get(i).getCastList().get(j).contains(searchActor.trim().toLowerCase()))
+                {
+                    searchedMovies.add(allMovies.get(i));
+                }
+        }
+        }Recommendation.checkSearchResult(searchedMovies); 
+    }catch(IllegalArgumentException e){
+            System.out.println("Empty search");
+    }catch(Exception e){
+     System.out.println("Unexpected error "+ e.getMessage());   
+    }
+    }
+    
+    public void searchMovieByLanguage(ArrayList<Movie> allMovies)
+    {
+        String searchLanguage;
+        System.out.println("Search : ");
+        try{
+        searchLanguage = input.next();
+        
+        if(searchLanguage.isBlank()){
+            throw new IllegalArgumentException();
+        }
+        
+        ArrayList<Movie> searchedMovies = new ArrayList<>();
+        
+        for(int i=0 ; i<allMovies.size() ; i++)
+        {
+                if(allMovies.get(i).getGenre().toLowerCase().contains(searchLanguage.trim().toLowerCase()))
+                {
+                    searchedMovies.add(allMovies.get(i));
+                }
+        }Recommendation.checkSearchResult(searchedMovies); 
+    }catch(IllegalArgumentException e){
+            System.out.println("Empty search");
+    }catch(Exception e){
+     System.out.println("Unexpected error "+ e.getMessage());   
+    }
+    }
     
     public void Search(ArrayList<Movie> allMovies)
     {
@@ -215,8 +326,10 @@ public class Recommendation extends Movie{
         System.out.println("(1) By movie name");
         System.out.println("(2) By movie genre");
         System.out.println("(3) By movie director");
+        System.out.println("(4) By movie Actor");
+        System.out.println("(5) By Language");        
         System.out.println("Enter your choice");
-        
+        try{
         choice1 = input.nextInt();
         
         switch (choice1){
@@ -228,16 +341,31 @@ public class Recommendation extends Movie{
                 break;
             case 3:
                 searchMovieByDirector(allMovies);
-                break;       
+                break;
+            case 4:
+                searchMovieByActor(allMovies);
+            case 5:
+                searchMovieByLanguage(allMovies);
+        }
+        }catch(InputMismatchException e){
+            System.out.println("Please enter valid number");
         }
     }
     
-     /*public void RecommendMoviesByWathchedGenre(ArrayList<Movie> allMovies){
-         
-     }*/
     
+    public void recommendedMovies(ArrayList<Movie> allMovies ,User Users){
+        for(int i=0 ; i<allMovies.size() ; i++){
+            for(int j=0 ; j<Users.getWatchedMovies().size() ; j++)
+            {
+                if(allMovies.get(i).getDirector().getName().equals(Users.getWatchedMovies().get(j).getDirector().getName()) ||
+                        (allMovies.get(i).getGenre().equals(Users.getWatchedMovies().get(j).getGenre()))  || 
+                        (allMovies.get(i).getCastList().equals(Users.getWatchedMovies().get(j).getCastList())))
+                    System.out.println(Users.getWatchedMovies().get(j).getDirector().getName());
+            }
+        }
+    }   
 }
-
+    //////////update rating///////////
    /*
     ///////////TO BE ADDED TO MOVIE CLASS//////////////////////
     private float rate;
@@ -277,5 +405,4 @@ public class Recommendation extends Movie{
 ////////TO BE ADDED TO DIRECTOR CLASS////////////////////////
     private String name;
     name = firstName.concat(lastName);        IN THE CONSTRUCTOR
-
     }*/
