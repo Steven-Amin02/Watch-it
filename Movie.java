@@ -239,31 +239,57 @@ public class Movie {
     public void setRate(float rate) {
         this.rate = rate;
     }
-        public String getGenre() {
-            return genre;
-        }
-        public void setGenre(String genre) {
-            this.genre = genre;
-        }
-        public Director getDirector() {
-            return Director;
-        }
-        public void setD(Director D) {
-            this.Director = D;
-        }
+    public String getGenre() {
+        return genre;
+    }
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+    public Director getDirector() {
+        return Director;
+    }
+    public void setD(Director D) {
+        this.Director = D;
+    }
+
     // Method to display movie details
-    @Override
-    public String toString() {
-        return "Movie{" +
-                "movieId='" + movieId + '\'' +
-                ", title='" + title + '\'' +
-                ", movieDate=" + movieDate +
-                ", duration=" + duration +
-                ", genre=" + genre +
-                ", budget=" + budget +
-                ", Revenue=" + revenue +
-                ", poster='" + poster + '\'' +
-                ", country='" + country + '\'' +
-                '}';
+    static public void displayAll(ArrayList<Movie> movies){
+        for(Movie movie : movies) {
+            System.out.println("-----------------------------------------------");
+            System.out.println("Movie{" +
+                    "movieId='" + movie.movieId + '\'' +
+                    ", title='" + movie.title + '\'' +
+                    ", movieDate=" + movie.movieDate +
+                    ", duration=" + movie.duration +
+                    ", genre=" + movie.genre +
+                    ", budget=" + movie.budget +
+                    ", Revenue=" + movie.revenue +
+                    ", poster='" + movie.poster + '\'' +
+                    ", country='" + movie.country + '\'' +
+                    '}');
+            System.out.println("-----------------------------------------------");
+        }
+    }
+    static public void movieInfo(Movie movie){
+            System.out.println("-----------------------------------------------");
+            System.out.println("Movie{" +
+                    "movieId='" + movie.movieId + '\'' +
+                    ", title='" + movie.title + '\'' +
+                    ", movieDate=" + movie.movieDate +
+                    ", duration=" + movie.duration +
+                    ", imdbScore=" + movie.imdbScore +
+                    ", rate=" + movie.rate +
+                    ", noOfviews=" + movie.noOfviews +
+                    ", noOfikes=" + movie.noOfikes +
+                    ", Director=" + movie.Director +
+                    ", genre='" + movie.genre + '\'' +
+                    ", languages=" + movie.languages +
+                    ", castList=" + movie.castList +
+                    ", budget=" + movie.budget +
+                    ", revenue=" + movie.revenue +
+                    ", poster='" + movie.poster + '\'' +
+                    ", country='" + movie.country + '\'' +
+                    '}');
+            System.out.println("-----------------------------------------------");
     }
 }
