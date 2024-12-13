@@ -1,4 +1,3 @@
-package Model;
 import java.io.PrintStream;
 import java.util.Calendar;
 import java.util.Date;
@@ -9,7 +8,7 @@ import java.util.Scanner;
 
 public class Subscription {
 
-    
+
     private Plan Plans;
     private double Price;
     private Date StartDate;
@@ -24,6 +23,7 @@ public class Subscription {
     Scanner scanner = new Scanner(System.in);
 
     public Subscription( String planType, Date startDate) {
+
         this.StartDate = startDate;
         if (planType == null || planType.trim().isEmpty()) {
             this.Plans = Plan.getPlanByName("Non-plan");
@@ -37,7 +37,7 @@ public class Subscription {
     public Subscription() {
     }
 
-    
+
 
     public Plan getPlans() {
         return Plans;
@@ -97,7 +97,8 @@ public class Subscription {
                     case "standard" -> StandardCount++;
                     case "premium" -> PremiumCount++;
                 }
-            } else {
+            }
+            else {
                 System.out.println("Invalid plan type");
             }
         } catch (NullPointerException e) {
@@ -117,6 +118,7 @@ public class Subscription {
         if (this.Plans != null) {
             if (this.Plans.getPlanName().equalsIgnoreCase("Non-plan")) {
                 System.out.println("You are currently on the Non-plan. No subscription benefits are available.");
+                TestNonSubscription();
             } else {
                 Date currentDate = new Date();
                 if (currentDate.after(this.ExpirationDate)) {
@@ -285,8 +287,6 @@ public class Subscription {
     }
 
     public void sendPlanComparison() {
-
-
         try {
             System.out.println("Current plan: "+this.Plans.getPlanName());
             System.out.println("Resolution: "+this.Plans.getResolution());
@@ -298,7 +298,6 @@ public class Subscription {
         } catch (NullPointerException E) {
             System.out.println("No plan set for this subscription.");
         }
-
     }
 
     public void DisplayNumOfSubscriptions() {
@@ -354,7 +353,7 @@ public class Subscription {
                     case 1:
                         DisplaySubscriptions();
                         System.out.println("\n");
-                        System.out.print("Enter new plan type (basic, standard, premium): ");
+                        System.out.print("Enter new plan type (Non-plan, basic, standard, premium): ");
                         String newPlan = scanner.next();
                         upgradePlan(newPlan);
                         break;
@@ -378,10 +377,7 @@ public class Subscription {
                         break;
                     case 8:
                         System.out.println("Exiting...");
-                        scanner.close();
                         return;
-
-
                     default:
                         System.out.println("Invalid choice. Please try again.");
                         break;
@@ -394,38 +390,38 @@ public class Subscription {
 
 
     public void TestNonSubscription() {
-        while (true) {
             System.out.println("Not Subscribed Menu");
             System.out.println("1. Choose your subscription.");
             System.out.println("2. Display available subscriptions");
-            System.out.println("3. Exit");
             System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
 
             switch (choice) {
                 case 1:
-                    System.out.print("Enter new plan type (basic, standard, premium): ");
+                    DisplaySubscriptions();
+                    System.out.print("Enter new plan type (Non-plan, basic, standard, premium): ");
                     String newPlan = scanner.next();
                     setPlan(newPlan);
+                    if(newPlan.equalsIgnoreCase("Non-plan")){
+                        TestNonSubscription();;
+                    }
                     break;
                 case 2:
                     DisplaySubscriptions();
                     break;
                 case 3:
                     System.out.println("Exiting...");
-                    scanner.close();
-                    return;
+                    System.exit(0);
                 default:
                     System.out.println("Invalid choice. Please try again.");
-
                     break;
             }
 
-        }
+
     }
 
     public void Testmenu() {
-       if (Plans == null || Plans.getPlanName().equalsIgnoreCase("Non-plan")) {
+        if (Plans == null || Plans.getPlanName().equalsIgnoreCase("Non-plan")) {
             TestNonSubscription();
         }
         else{
@@ -433,11 +429,7 @@ public class Subscription {
         }
     }
 
-
-
-    //end
 }
-
 
 
 
