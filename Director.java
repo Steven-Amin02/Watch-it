@@ -1,6 +1,11 @@
 package Model;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.ArrayList;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class Director {
     protected String firstName;
@@ -13,24 +18,26 @@ public class Director {
     private List<String> movies;
     private String name;
 
-    public Director(String firstName, String lastName, String nationality, int age, String dateOfBirth, String gender, String socialMedialinks){
+    public Director(String firstName, String lastName,
+                    String nationality, int age, String dateOfBirth,
+                    String gender, String socialMedialinks) {
         name = firstName.concat(lastName);
         this.firstName = firstName;
         this.lastName = lastName;
         this.nationality = nationality;
-        this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.age = age;
         this.socialMedialinks = socialMedialinks;
         this.movies = new ArrayList<>();
+        setDateOfBirth(dateOfBirth);
     }
 
     public Director() {
-
+        this.movies = new ArrayList<>();
     }
 
-    // movie setter
-    public void addMovie(String movie){
+    // Movie setter
+    public void addMovie(String movie) {
         movies.add(movie);
     }
 
@@ -46,12 +53,41 @@ public class Director {
         this.nationality = nationality;
     }
 
+    //to validate age
+    public void setAge(String ageInput) {
+        try {
+            int parsedAge = Integer.parseInt(ageInput);
+            if (parsedAge > 0) {
+                this.age = parsedAge;
+            } else {
+                System.out.println("Age must be a positive number.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input for age. Please enter a numeric value.");
+        }
+    }
+
     public void setAge(int age) {
         this.age = age;
     }
 
     public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+        if (isValidDate(dateOfBirth)) {
+            this.dateOfBirth = dateOfBirth;
+        } else {
+            this.dateOfBirth = "Invalid dateOfBirth";
+        }
+    }
+
+    //to validate date of birth
+    private boolean isValidDate(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-mm-yyyy");
+        try {
+            LocalDate parsedDate = LocalDate.parse(date, formatter);
+            return !parsedDate.isAfter(LocalDate.now());
+        } catch (DateTimeParseException e) {
+            return false;
+        }
     }
 
     public void setGender(String gender) {
@@ -59,8 +95,23 @@ public class Director {
     }
 
     public void setSocialMedialinks(String socialMedialinks) {
-        this.socialMedialinks = socialMedialinks;
+        if (isValidURL(socialMedialinks)) {
+            this.socialMedialinks = socialMedialinks;
+        } else {
+            System.out.println("Invalid social media link. Please provide a valid URL.");
+        }
     }
+
+    //to validate SM links
+    private boolean isValidURL(String url) {
+        try {
+            new URL(url);
+            return true;
+        } catch (MalformedURLException e) {
+            return false;
+        }
+    }
+
 
     public String getFirstName() {
         return firstName;
@@ -106,18 +157,18 @@ public class Director {
         this.name = name;
     }
 
-    //display directors info
-    public void displayInfo(){
-        System.out.println("Director: " + firstName + " " + lastName);
-        System.out.println("Date Of Birth: " + dateOfBirth);
-        System.out.println("Age: " + age);
-        System.out.println("Gender: " + gender);
-        System.out.println("Nationality: " + nationality);
-        System.out.println("Social Media Links: " + socialMedialinks);
-        System.out.println("Movies: ");
-        for (String movie : movies){
-            System.out.println(" - " + movie);
-        }
-        System.out.println();
+    // Display director's info
+    public String displayInfo() {
+        return "Director{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", nationality='" + nationality + '\'' +
+                ", age=" + age +
+                ", dateOfBirth='" + dateOfBirth + '\'' +
+                ", gender='" + gender + '\'' +
+                ", socialMedialinks='" + socialMedialinks + '\'' +
+                ", movies=" + movies +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
