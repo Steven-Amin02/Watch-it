@@ -9,12 +9,14 @@ public class Main {
     static ArrayList <Movie> movies = new ArrayList<>();
     private static Scanner scanner = new Scanner(System.in);
     static Recommendation recommendation = new Recommendation();
+    private static ArrayList <UserWatchRecord> userwatchrecord = new ArrayList<>();
+    static UserWatchRecord WatchRecord = new UserWatchRecord();
+    static User user = new User();
+    static Admin admin = new Admin();
+    static Movie writeMovie = new Movie();
 
     public static void main(String[] args) throws IOException {
         loadDataFromFile();
-/*        Movie movie = new Movie( "title", LocalDate.of(2010, 7, 16), 2.4f,  4.6f,  45f,  "poster", "country",  3f ,  "genre");
-        movies.add(movie);
-        movie.writeToFile(movie);*/
         while (true) {
             System.out.println("-----------Welcome to WatchIt App!-----------");
             System.out.println("1. Sign Up");
@@ -28,7 +30,6 @@ public class Main {
                 switch (choice) {
                     case 1:
                         loginSystem.signUp();  // Sign up process
-                        System.out.println(loginSystem.users);
                         break;
                     case 2:
                         Person loggedIn = loginSystem.loginUser();  // Log in process
@@ -40,8 +41,9 @@ public class Main {
                         break;
                     case 3:
                         System.out.println("Goodbye!");
-                        loginSystem.admins.get(0).writeToFile(loginSystem.admins);
-                        loginSystem.users.get(0).writeToFile(loginSystem.users);
+                        admin.writeToFile(loginSystem.admins);
+                        user.writeToFile(loginSystem.users);
+                        writeMovie.writeToFile(movies);
                         System.exit(0);  // Exit the application
                     default:
                         System.out.println("Invalid choice. Please try again.");
@@ -52,50 +54,65 @@ public class Main {
         }
     }
     // User-specific interactive menu
-    private static void userMenu(User user) {
-        user.subscription.checkSubscriptionStatus();
+    private static void userMenu(User user) throws IOException {
+        user.getSubscription().checkSubscriptionStatus();
+        user.getSubscription().sendExpirationNotification();
+        user.getSubscription().usageReminder();
         while (true) {
             System.out.println("\nUser Menu:");
-            System.out.println("1. view all avilable Movies");
-            System.out.println("2. View Watched Movies");
-            System.out.println("3. Add Watched Movie");
-            System.out.println("4. View To-Watch List");
-            System.out.println("5. Add Movie to To-Watch List");
-            System.out.println("6. Manage Subsicriptions");
-            System.out.println("7. Settings");
-            System.out.println("8. Log Out");
-            System.out.println("9. show last 10 movie");
+            System.out.println("1. View recommended movies");
+            System.out.println("2. view all avilable Movies");
+            System.out.println("3. show last 10 movie");
+            System.out.println("4. Sort All Movies ");
+            System.out.println("5. View Watched Movies");
+            System.out.println("6. Add Watched Movie");
+            System.out.println("7. View To-Watch List");
+            System.out.println("8. Add Movie to To-Watch List");
+            System.out.println("9. Manage Subsicriptions");
+            System.out.println("10. Settings");
+            System.out.println("11. Log Out");
             System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume the newline character
 
             switch (choice) {
                 case 1:
-                    Movie.displayAll(movies);
-                    recommendation.Search(movies);
+                    recommendation.recommendedMovies(movies, user, userwatchrecord);
                     break;
                 case 2:
-                    // View watched movies
-                    System.out.println("Watched Movies: ");
-                    if (user.getWatchedMovies().isEmpty()) {
-                        System.out.println("No watched movies.");
-                    } else {
-                        for (Movie movie : user.getWatchedMovies()) {
-                            System.out.println("- " + movie);
-                        }
+                    Movie.displayAll(movies);
+                    Movie.watchMovie(movies,user, userwatchrecord);
+
+                    recommendation.Search(movies);
+                    break;
+                case 3:
+                    ArrayList <Movie> moviesLast10Days = new ArrayList<>(); // Micky
+                    moviesLast10Days.addAll(Movie.getMoviesReleasedLast10Days(movies));
+                    for(Movie movie : moviesLast10Days){
+                        Movie.movieInfo(movie);
                     }
                     break;
-
-                case 3:
+                case 4 :
+                    recommendation.Sort(movies);
+                    break;
+                case 5:
+                    // View watched movies
+                    System.out.println("Watched Movies: ");
+                    for(Movie movie : user.getMoviesByUser(user.getId() ,userwatchrecord, movies)) {
+                        System.out.println("---------------------------------------------------");
+                        System.out.println(movie.getTitle());
+                        System.out.println(movie.getImdbScore());
+                        System.out.println(movie.getGenre());
+                        System.out.println("---------------------------------------------------");
+                    }
+                    break;
+                case 6:
                     // Add a watched movie
-                    System.out.print("Enter Movie Name to Add to Watched List: ");
-                    String watchedMovieName = scanner.nextLine();
-                    Movie watchedMovie = new Movie();
-                    user.addWatchedMovie(watchedMovie);
-                    System.out.println("Movie added to Watched Movies.");
+                    Movie.watchMovie(movies,user, userwatchrecord);
+                    WatchRecord.writeToFile(userwatchrecord);
                     break;
 
-                case 4:
+                case 7:
                     // View to-watch movies
                     System.out.println("To-Watch Movies: ");
                     if (user.getToWatchMovies().isEmpty()) {
@@ -107,7 +124,7 @@ public class Main {
                     }
                     break;
 
-                case 5:
+                case 8:
                     // Add a movie to the To-Watch List
                     System.out.print("Enter Movie Name to Add to To-Watch List: ");
                     String toWatchMovieName = scanner.nextLine();
@@ -119,23 +136,20 @@ public class Main {
                     user.addToWatchMovie(toWatchMovie);
                     System.out.println("Movie added to To-Watch List.");
                     break;
-                case 6:
+                case 9:
                     // Settings
                     user.subscription.test();
                     break;
 
-                case 7:
+                case 10:
                     // Settings
                     settingsMenu(user);
                     break;
 
-                case 8:
+                case 11:
                     // Log out
                     System.out.println("Logged out.");
                     return;  // Return to the main menu
-                case 9:
-
-
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
@@ -145,6 +159,7 @@ public class Main {
     // Settings menu for changing password, username, or email
     private static void settingsMenu(User user) {
         while (true) {
+
             System.out.println("\nSettings Menu:");
             System.out.println("1. Change Password");
             System.out.println("2. Change Username");
@@ -193,12 +208,15 @@ public class Main {
         User tempUser = new User(); // Temporary user object to call FileReader
         Admin tempAdmin = new Admin();
         Movie tempMovie = new Movie();
+        UserWatchRecord tempUserWatchRecord = new UserWatchRecord();
         try {
             tempUser.FileReader(loginSystem.users); // Load data into the users list
             System.out.println("User data loaded successfully!");
             tempAdmin.FileReader(loginSystem.admins);
             System.out.println("Admin data loaded successfully!");
             tempMovie.FileReader(movies);
+            System.out.println("Movie data loaded successfully!");
+            tempUserWatchRecord.FileReader(userwatchrecord);
         } catch (Exception e) {
             System.out.println("Error loading data: " + e.getMessage());
         }
