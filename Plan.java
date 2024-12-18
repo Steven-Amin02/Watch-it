@@ -24,6 +24,15 @@ public class Plan {
         this.DeviceAccess = DeviceAccess;
         this.FamilySharing = FamilySharing;
         this.AdditionalBenefit = AdditionalBenefits;
+
+    }
+
+    public Plan(String planName) {
+        this.PlanName=planName;
+    }
+
+    public Plan() {
+
     }
 
 
@@ -40,7 +49,11 @@ public class Plan {
     }
 
     public void setMaxMovies(int maxMovies) {
-        MaxMovies = maxMovies;
+        if (maxMovies >= 0) {
+            this.MaxMovies = maxMovies;
+        } else {
+            System.out.println("Max Movies cannot be negative. No changes made.");
+        }
     }
 
     public double getPrice() {
@@ -98,20 +111,36 @@ public class Plan {
     }
 
     public static Plan getPlanByName(String planType) {
-        if (planList == null || planList.isEmpty()) {
-            System.err.println("Debug: planList is null or empty. Initializing...");
-            populatePlanList();
-        }
+        Plan.populatePlanList(); // Ensure the list is populated
+
+        // Handle null or empty planType
         if (planType == null || planType.trim().isEmpty()) {
-            System.err.println("Error: Invalid plan type provided.");
-            return null;
+            return findNonPlanDirectly(); // Return the "Non-plan" directly
         }
+
+        // Standardize input
+        planType = planType.trim();
+
+        // Find the plan within the plan list
         for (Plan plan : planList) {
-            if (plan.PlanName.equalsIgnoreCase(planType.trim())) {
+            if (plan.getPlanName().equalsIgnoreCase(planType)) {
                 return plan;
             }
         }
-        return null;
+
+        // If not found, return default "Non-plan" directly
+        return findNonPlanDirectly();
+    }
+
+    // Helper method to directly retrieve "Non-plan" without recursion
+    private static Plan findNonPlanDirectly() {
+        for (Plan plan : planList) {
+            if (plan.getPlanName().equalsIgnoreCase("Non-plan")) {
+                return plan;
+            }
+        }
+        // As a fallback, if "Non-plan" was not in the list (shouldn't happen)
+        return new Plan("Non-plan", 0, 0.0, "None", 0, 0, "No access to content");
     }
 
 
