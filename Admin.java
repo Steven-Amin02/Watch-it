@@ -113,7 +113,6 @@ public class Admin extends Person {
         } else {
             System.out.println("Movie already exists.");
         }
-        movie.writeToFile(movie);
     }
     public void removeMovie() {
         String moviename;
@@ -361,7 +360,7 @@ public class Admin extends Person {
             // Construct a CSV-like line for this User object
             for(Admin admin :admins) {
                 StringBuilder adminLine = new StringBuilder();
-                adminLine.append(getId()).append(delimiter);
+                adminLine.append(admin.getId()).append(delimiter);
                 adminLine.append(admin.getFirstName()).append(delimiter);
                 adminLine.append(admin.getLastName()).append(delimiter);
                 adminLine.append(admin.getUsername()).append(delimiter);
