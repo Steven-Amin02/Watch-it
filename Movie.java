@@ -5,10 +5,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Movie {
+public class Movie{
     private static final Scanner input = new Scanner(System.in);
     private String movieId;
     private String title;
@@ -16,8 +15,7 @@ public class Movie {
     private float duration;
     private float imdbScore;
     private float rate;
-    private int noOfviews;
-    private int noOfikes;
+    private int noOfviews = 0;
     protected Director Director ;
     private String genre;
     private ArrayList<String> languages = new ArrayList<>();
@@ -28,6 +26,7 @@ public class Movie {
     private String poster;
     private String country;
     static int countMovie = 0;
+
     File file = new File("Movie.txt");
 
 
@@ -250,12 +249,6 @@ public class Movie {
     public void setNoOfviews(int noOfviews) {
         this.noOfviews = noOfviews;
     }
-    public int getNoOfikes() {
-        return noOfikes;
-    }
-    public void setNoOfikes(int noOfikes) {
-        this.noOfikes = noOfikes;
-    }
     public float getRate() {
         return rate;
     }
@@ -291,7 +284,6 @@ public class Movie {
             System.out.printf("%-18s: %.1f%n", "IMDB Score", movie.getImdbScore());
             System.out.printf("%-18s: %.1f%n", "Rate", movie.getRate());
             System.out.printf("%-18s: %d%n", "Number of Views", movie.getNoOfviews());
-            System.out.printf("%-18s: %d%n", "Number of Likes", movie.getNoOfikes());
             System.out.printf("%-18s: $%.2f%n", "Budget", movie.getBudget());
             System.out.printf("%-18s: $%.2f%n", "Revenue", movie.getRevenue());
             System.out.printf("%-18s: $%.2f%n", "Profitability", movie.calcProfitability());
@@ -328,34 +320,37 @@ public class Movie {
             System.out.println("-----------------------------------------------");
         }
     }
-    public void writeToFile(Movie movie) throws IOException {
+    public void writeToFile(ArrayList <Movie> movies) throws IOException {
         // Use PrintWriter to write to the file in append mode
-        try (PrintWriter writer = new PrintWriter(new FileWriter(file, true))) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(file, false))) {
             String delimiter = ",";
-            StringBuilder movieLine = new StringBuilder();
+            for(Movie movie : movies) {
+                StringBuilder movieLine = new StringBuilder();
+                movieLine.append(movie.getMovieId()).append(delimiter);
+                movieLine.append(movie.getTitle()).append(delimiter);
+                movieLine.append(movie.getDuration()).append(delimiter);
+                movieLine.append(movie.getMovieDate()).append(delimiter);
+                movieLine.append(movie.getBudget()).append(delimiter);
+                movieLine.append(movie.getCountry()).append(delimiter);
+                movieLine.append(movie.getGenre()).append(delimiter);
+                movieLine.append(movie.getImdbScore()).append(delimiter);
+                movieLine.append(movie.getRate()).append(delimiter);
 
-            movieLine.append(movie.getMovieId()).append(delimiter);
-            movieLine.append(movie.getTitle()).append(delimiter);
-            movieLine.append(movie.getDuration()).append(delimiter);
-            movieLine.append(movie.getMovieDate()).append(delimiter);
-            movieLine.append(movie.getBudget()).append(delimiter);
-            movieLine.append(movie.getCountry()).append(delimiter);
-            movieLine.append(movie.getGenre()).append(delimiter);
-            movieLine.append(movie.getImdbScore()).append(delimiter);
-            movieLine.append(movie.getRate()).append(delimiter);
-
-            // Add Director details (if not null)
-            if (movie.getDirector() != null) {
-                movieLine.append(movie.getDirector().getFirstName()).append(delimiter);
-                movieLine.append(movie.getDirector().getLastName()).append(delimiter);
-                movieLine.append(movie.getDirector().getNationality()).append(delimiter);
-            } else {
-                // If no director, add placeholders
-                movieLine.append("Unknown").append(delimiter);  // First Name
-                movieLine.append("Unknown").append(delimiter);  // Last Name
-                movieLine.append("Unknown").append(delimiter);  // Nationality
+                // Add Director details (if not null)
+                if (movie.getDirector() != null) {
+                    movieLine.append(movie.getDirector().getFirstName()).append(delimiter);
+                    movieLine.append(movie.getDirector().getLastName()).append(delimiter);
+                    movieLine.append(movie.getDirector().getName()).append(delimiter);
+                    movieLine.append(movie.getDirector().getNationality()).append(delimiter);
+                } else {
+                    // If no director, add placeholders
+                    movieLine.append("Unknown").append(delimiter);  // First Name
+                    movieLine.append("Unknown").append(delimiter);  // Last Name
+                    movieLine.append("Unknown").append(delimiter);  // Nationality
+                }
+                movieLine.append(movie.noOfviews).append(delimiter);
+                writer.println(movieLine.toString());
             }
-            writer.println(movieLine.toString());
         }
     }
     public void FileReader(ArrayList<Movie> movies) throws IOException {
@@ -370,7 +365,7 @@ public class Movie {
             String line = scan.next().trim(); // Read a full line
             String[] data = line.split(","); // Split the line by commas
 
-            if (data.length >= 12) { // Ensure the line has all required fields
+            if (data.length >= 14) { // Ensure the line has all required fields
                 Movie movie = new Movie();
                 movie.movieId = data[0].trim();
                 movie.setTitle(data[1].trim());
@@ -381,12 +376,13 @@ public class Movie {
                 movie.setGenre(data[6].trim());
                 movie.setImdbScore(Float.parseFloat(data[7].trim()));
                 movie.setRate(Float.parseFloat(data[8].trim()));
-
                 // Read Director details
                 Director director = new Director();
                 director.setFirstName(data[9].trim()); // First Name
                 director.setLastName(data[10].trim()); // Last Name
-                director.setNationality(data[11].trim()); // Nationality
+                director.setName(data[11].trim());
+                director.setNationality(data[12].trim()); // Nationality
+                movie.setNoOfviews(Integer.parseInt(data[13].trim()));
                 movie.setDirector(director);
 
                 movies.add(movie); // Add the movie to the list
@@ -398,26 +394,96 @@ public class Movie {
         System.out.println("File loaded successfully! " + movies.size() + " movies found.");
     }
     static public void movieInfo(Movie movie){
-            System.out.println("-----------------------------------------------");
-            System.out.println("Movie{" +
-                    "movieId='" + movie.movieId + '\'' +
-                    ", title='" + movie.title + '\'' +
-                    ", movieDate=" + movie.movieDate +
-                    ", duration=" + movie.duration +
-                    ", imdbScore=" + movie.imdbScore +
-                    ", rate=" + movie.rate +
-                    ", noOfviews=" + movie.noOfviews +
-                    ", noOfikes=" + movie.noOfikes +
-                    ", Director=" + movie.Director +
-                    ", genre='" + movie.genre + '\'' +
-                    ", languages=" + movie.languages +
-                    ", castList=" + movie.castList +
-                    ", budget=" + movie.budget +
-                    ", revenue=" + movie.revenue +
-                    ", poster='" + movie.poster + '\'' +
-                    ", country='" + movie.country + '\'' +
-                    '}');
-            System.out.println("-----------------------------------------------");
-
+        System.out.println("-----------------------------------------------");
+        System.out.println("Movie{" +
+                "movieId='" + movie.movieId + '\'' +
+                ", title='" + movie.title + '\'' +
+                ", movieDate=" + movie.movieDate +
+                ", duration=" + movie.duration +
+                ", imdbScore=" + movie.imdbScore +
+                ", rate=" + movie.rate +
+                ", noOfviews=" + movie.noOfviews +
+                ", Director=" + movie.Director.displayInfo() +
+                ", genre='" + movie.genre + '\'' +
+                ", languages=" + movie.languages +
+                ", castList=" + movie.castList +
+                ", budget=" + movie.budget +
+                ", revenue=" + movie.revenue +
+                ", poster='" + movie.poster + '\'' +
+                ", country='" + movie.country + '\'' +
+                '}');
+        System.out.println("-----------------------------------------------");
     }
+    static public void watchMovie(ArrayList<Movie> movies, User user, ArrayList<UserWatchRecord> userWatchRecordList) {
+        System.out.print("Write the name of the movie you want to watch: ");
+        String name = input.nextLine().trim(); // Use trim to avoid issues with spaces around the name
+
+        // Ensure user has a subscription and a plan
+        if (user.getSubscription() == null || user.subscription.getPlans() == null) {
+            System.out.println("User does not have an active subscription or plan.");
+            return;
+        }
+
+        Subscription subscription = user.getSubscription();
+        Plan plan = user.subscription.getPlans();
+
+        // Check if user has exceeded the maximum number of movies allowed
+        if (plan.getPlanName().equalsIgnoreCase("premium") &&
+                user.subscription.getMoviesWatched() >= Plan.planList.get(2).MaxMovies) {
+            System.out.println("You have exceeded the maximum number of allowed movies.");
+            return;
+        }
+        if (plan.getPlanName().equalsIgnoreCase("standard") &&
+                user.subscription.getMoviesWatched() >= Plan.planList.get(1).MaxMovies) {
+            System.out.println("You have exceeded the maximum number of allowed movies.");
+            return;
+        }
+        if (plan.getPlanName().equalsIgnoreCase("basic") &&
+                user.subscription.getMoviesWatched() >= Plan.planList.get(0).MaxMovies) {
+            System.out.println("You have exceeded the maximum number of allowed movies.");
+            return;
+        }
+
+        // Find the movie by name
+        Recommendation recommendation = new Recommendation();
+        Movie movie = recommendation.getmoviebyname(name, movies);
+
+        if (movie != null) {
+            System.out.println("Movie watched: " + movie.getTitle());
+
+            // Create and record user watch details
+            UserWatchRecord userWatchRecord = new UserWatchRecord();
+            userWatchRecord.setUserId(user.getId());
+            userWatchRecord.setMovie(movie.getTitle());
+            userWatchRecord.setDateOfWatching(LocalDate.now());
+
+            // Prompt for movie rating
+            System.out.print("Enter Movie Rating (1 to 5): ");
+            try {
+                int rating = input.nextInt();
+                if (rating < 1 || rating > 5) {
+                    System.out.println("Invalid rating. Please enter a value between 1 and 5.");
+                } else {
+                    userWatchRecord.setRating(rating);
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid input for rating. Movie watch recorded without a rating.");
+                input.nextLine(); // Clear invalid input
+            }
+
+            // Add watched movie to user and increment subscription's watched count
+            userWatchRecord.addWatchedMovie(movie);
+            movie.noOfviews++;
+            subscription.MoviesWatched++;
+
+            // Add the user watch record to the shared list
+            userWatchRecordList.add(userWatchRecord);
+
+            System.out.println("Your watch record: " + userWatchRecord);
+        } else {
+            System.out.println("Movie not found.");
+        }
+    }
+
+
 }
