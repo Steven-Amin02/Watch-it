@@ -16,23 +16,23 @@ public class Login {
     // Sign up method (handles both User and Admin)
     public void signUp() throws Exception {
         // Prompt for first name and validate
-        System.out.println("Enter your first name:");
+        System.out.print("Enter your first name:");
         String firstName = enterValidName("First name must only contain letters.");
 
         // Prompt for last name and validate
-        System.out.println("Enter your last name:");
+        System.out.print("Enter your last name:");
         String lastName = enterValidName("Last name must only contain letters.");
 
         // Prompt for username and validate
-        System.out.println("Enter your username:");
+        System.out.print("Enter your username:");
         String username = enterValidUsername();
 
         // Prompt for password and validate
-        System.out.println("Enter your password:");
+        System.out.print("Enter your password:");
         String password = enterValidPassword();
 
         // Prompt for email and validate
-        System.out.println("Enter your email:");
+        System.out.print("Enter your email:");
         String email = enterValidEmail();
 
         // Automatically assign user type based on email format
