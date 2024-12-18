@@ -1,5 +1,4 @@
-package watchit.project;
-
+package Model;
 import java.util.Scanner;
 
 public abstract class Payment {
@@ -32,9 +31,9 @@ public abstract class Payment {
         String cvv = input.nextLine();
 
         Card card = new Card(number, name, cvv);
-        
-                                        // paymentAmount will be the price of the plan that user chooose
-        
+
+        // paymentAmount will be the price of the plan that user chooose
+
         switch (choice) {
             case 1:
                 card.processVisaPayment(paymentAmount);
